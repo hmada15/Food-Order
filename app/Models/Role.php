@@ -34,4 +34,14 @@ class Role extends Model
     {
         return $this->belongsToMany(Permission::class);
     }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function() {
+            Cache::forget('role-permissions');
+        });
+    }
+
 }

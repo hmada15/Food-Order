@@ -2,21 +2,22 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\Traits\MediaUploadingTrait;
-use App\Http\Requests\MassDestroyOrderRequest;
-use App\Http\Requests\StoreOrderRequest;
-use App\Http\Requests\UpdateOrderRequest;
-use App\Models\Client;
-use App\Models\ClientAddress;
-use App\Models\DeliveryFee;
+use Gate;
 use App\Models\Order;
+use App\Models\Client;
 use App\Models\Product;
 use App\Models\TaxValue;
-use Gate;
+use App\Models\DeliveryFee;
 use Illuminate\Http\Request;
+use App\Models\ClientAddress;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 use Spatie\MediaLibrary\Models\Media;
+use App\Http\Requests\StoreOrderRequest;
+use App\Http\Requests\UpdateOrderRequest;
+use App\Http\Requests\MassDestroyOrderRequest;
 use Symfony\Component\HttpFoundation\Response;
+use App\Http\Controllers\Traits\MediaUploadingTrait;
 
 class OrdersController extends Controller
 {
@@ -26,7 +27,7 @@ class OrdersController extends Controller
     {
         abort_if(Gate::denies('order_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $orders = Order::with(['client', 'address', 'product', 'tax', 'delivery_fee'])->get();
+        $orders = Order::with(['client', 'address', 'products', 'tax', 'delivery_fee'])->get();
 
         $clients = Client::get();
 
@@ -45,9 +46,9 @@ class OrdersController extends Controller
     {
         abort_if(Gate::denies('order_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $clients = Client::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $clients = Client::with('clientAddress')->get();
 
-        $addresses = ClientAddress::all()->pluck('street_name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        /* $addresses = ClientAddress::all()->pluck('street_name', 'id')->prepend(trans('global.pleaseSelect'), ''); */
 
         $products = Product::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -55,12 +56,44 @@ class OrdersController extends Controller
 
         $delivery_fees = DeliveryFee::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        return view('admin.orders.create', compact('clients', 'addresses', 'products', 'taxes', 'delivery_fees'));
+        return view('admin.orders.create', compact('clients', 'products', 'taxes', 'delivery_fees'));
     }
 
     public function store(StoreOrderRequest $request)
     {
-        $order = Order::create($request->all());
+        $all_products_prices = [];
+        //Get product prices
+        foreach($request->products as $id){
+            $product = Product::where("id", $id)->get(["regular_price", "sale_price"])->first();
+            array_push($all_products_prices,!empty($product->sale_price) ? $product->sale_price : $product->regular_price);
+        }
+        //Multiply product prices by number_of_product
+        foreach ($all_products_prices as $key => $price) {
+            $total[] = $price * $request->number_of_product[$key];
+        }
+        //Get the total amount of order
+        $amount = array_sum($total);
+
+        $order = Order::create([
+            "client_id"=> $request->client_id,
+            "address_id"=> $request->address_id,
+            "payment_method"=> $request->payment_method,
+            "tax_id"=> $request->tax_id,
+            "delivery_fee_id"=> $request->delivery_fee_id,
+            "status"=> $request->status,
+            "total_amount"=> $amount,
+            "note"=> $request->note
+        ]);
+
+        $order->products()->sync($request->input('products', []));
+
+        $ids = json_decode(json_encode($order->products()->allRelatedIds()), true);
+
+        $productss = array_combine($ids,$request->number_of_product);
+
+        foreach ($productss as $id => $productee){
+            $order->products()->updateExistingPivot($id, ['number_of_product' => $productee]);
+        }
 
         if ($media = $request->input('ck-media', false)) {
             Media::whereIn('id', $media)->update(['model_id' => $order->id]);
@@ -73,9 +106,9 @@ class OrdersController extends Controller
     {
         abort_if(Gate::denies('order_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $clients = Client::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $clients = Client::with('clientAddress')->get();
 
-        $addresses = ClientAddress::all()->pluck('street_name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        /* $addresses = ClientAddress::all()->pluck('street_name', 'id')->prepend(trans('global.pleaseSelect'), ''); */
 
         $products = Product::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -83,14 +116,46 @@ class OrdersController extends Controller
 
         $delivery_fees = DeliveryFee::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $order->load('client', 'address', 'product', 'tax', 'delivery_fee');
+        $order->load('client', 'address', 'products', 'tax', 'delivery_fee');
 
-        return view('admin.orders.edit', compact('clients', 'addresses', 'products', 'taxes', 'delivery_fees', 'order'));
+        return view('admin.orders.edit', compact('clients', 'products', 'taxes', 'delivery_fees', 'order'));
     }
 
     public function update(UpdateOrderRequest $request, Order $order)
     {
-        $order->update($request->all());
+        $all_products_prices = [];
+        //Get product prices
+        foreach($request->products as $id){
+            $product = Product::where("id", $id)->get(["regular_price", "sale_price"])->first();
+            array_push($all_products_prices,!empty($product->sale_price) ? $product->sale_price : $product->regular_price);
+        }
+        //Multiply product prices by number_of_product
+        foreach ($all_products_prices as $key => $price) {
+            $total[] = $price * $request->number_of_product[$key];
+        }
+        //Get the total amount of order
+        $amount = array_sum($total);
+
+        $order->update([
+            "client_id"=> $request->client_id,
+            "address_id"=> $request->address_id,
+            "payment_method"=> $request->payment_method,
+            "tax_id"=> $request->tax_id,
+            "delivery_fee_id"=> $request->delivery_fee_id,
+            "status"=> $request->status,
+            "total_amount"=> $amount,
+            "note"=> $request->note,
+        ]);
+
+        $order->products()->sync($request->input('products', []));
+
+        $ids = json_decode(json_encode($order->products()->allRelatedIds()), true);
+
+        $productss = array_combine($ids,$request->number_of_product);
+
+        foreach ($productss as $id => $productee){
+            $order->products()->updateExistingPivot($id, ['number_of_product' => $productee]);
+        }
 
         return redirect()->route('admin.orders.index');
     }
@@ -99,7 +164,7 @@ class OrdersController extends Controller
     {
         abort_if(Gate::denies('order_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $order->load('client', 'address', 'product', 'tax', 'delivery_fee');
+        $order->load('client', 'address', 'products', 'tax', 'delivery_fee');
 
         return view('admin.orders.show', compact('order'));
     }

@@ -11,9 +11,10 @@
             @csrf
             <div class="form-group">
                 <label class="required" for="client_id">{{ trans('cruds.order.fields.client') }}</label>
-                <select class="form-control select2 {{ $errors->has('client') ? 'is-invalid' : '' }}" name="client_id" id="client_id" required>
-                    @foreach($clients as $id => $client)
-                        <option value="{{ $id }}" {{ old('client_id') == $id ? 'selected' : '' }}>{{ $client }}</option>
+                <select class="form-control  #address_id {{ $errors->has('client') ? 'is-invalid' : '' }}" name="client_id" id="client_id" required>
+                    <option disabled selected>{{ trans('global.pleaseSelect') }}</option>
+                    @foreach($clients as $client)
+                        <option value="{{ $client->id }}" {{ old('client_id') == $client->id ? 'selected' : '' }}>{{ $client->name }}</option>
                     @endforeach
                 </select>
                 @if($errors->has('client'))
@@ -25,9 +26,12 @@
             </div>
             <div class="form-group">
                 <label class="required" for="address_id">{{ trans('cruds.order.fields.address') }}</label>
-                <select class="form-control select2 {{ $errors->has('address') ? 'is-invalid' : '' }}" name="address_id" id="address_id" required>
-                    @foreach($addresses as $id => $address)
-                        <option value="{{ $id }}" {{ old('address_id') == $id ? 'selected' : '' }}>{{ $address }}</option>
+                <select class="form-control #address_id {{ $errors->has('address') ? 'is-invalid' : '' }}" name="address_id" id="address_id" required>
+                    <option value="" disabled selected>{{ trans('global.pleaseSelect') }}</option>
+                    @foreach($clients as $client)
+                        @foreach($client->clientAddress as  $address)
+                            <option id="{{$client->id}}" value="{{ $address->id }}" {{ old('address_id') == $address->id ? 'selected' : '' }}>{{ $address->street_name }}</option>
+                        @endforeach
                     @endforeach
                 </select>
                 @if($errors->has('address'))
@@ -37,30 +41,68 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.order.fields.address_helper') }}</span>
             </div>
-            <div class="form-group">
-                <label class="required" for="product_id">{{ trans('cruds.order.fields.product') }}</label>
-                <select class="form-control select2 {{ $errors->has('product') ? 'is-invalid' : '' }}" name="product_id" id="product_id" required>
-                    @foreach($products as $id => $product)
-                        <option value="{{ $id }}" {{ old('product_id') == $id ? 'selected' : '' }}>{{ $product }}</option>
+
+            @if (!empty(old()))
+                @php $old_combine = array_combine(old("products"),old("number_of_product")) @endphp
+
+                <div class="form-group" id="dynamic_field" style="margin-bottom: 2.5rem">
+                    <label class="required" for="product_id">{{ trans('cruds.order.fields.product') }}</label>
+                    @foreach ($old_combine as $product_old => $number_old)
+                        <div class="form-row mb-2" id="row{{$loop->iteration}}">
+                            <select class="form-control col-5 mr-4 #address_id" name="products[]" id="product_id" required>
+                                @foreach($products as $id => $product)
+                                    <option value="{{ $id }}" {{ $product_old == $id ? 'selected' : '' }}>{{ $product }}</option>
+                                @endforeach
+                            </select>
+
+                            <input type="number" class="form-control col-5 mr-4 is-invalid" name="number_of_product[]"  value="{{ $number_old}}" placeholder="{{ trans('cruds.order.fields.number_of_product') }}">
+                                @if ($loop->index == 0)
+                                    <button type="button" name="add" id="add" class="btn btn-primary">Add More</button>
+                                @else
+                                    <button type="button" name="remove" id="{{$loop->iteration}}" class="btn btn-danger btn_remove">X</button>
+                                @endif
+                        </div>
+
+                        @if($errors->has('product_id'))
+                            <div class="invalid-feedback">
+                                {{ $errors->first('product_id') }}
+                            </div>
+                        @endif
+                        @if($errors->has('number_of_product'))
+                            <div class="invalid-feedback">
+                                {{ $errors->first('number_of_product') }}
+                            </div>
+                        @endif
                     @endforeach
-                </select>
-                @if($errors->has('product'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('product') }}
+                </div>
+            @else
+                <div class="form-group" id="dynamic_field" style="margin-bottom: 2.5rem">
+                    <label class="required" for="product_id">{{ trans('cruds.order.fields.product') }}</label>
+
+                    <div class="form-row mb-2">
+                        <select class="form-control col-5 mr-4 #address_id" name="products[]" id="product_id" required>
+                            @foreach($products as $id => $product)
+                                <option value="{{ $id }}" {{ old('product_id') == $id ? 'selected' : '' }}>{{ $product }}</option>
+                            @endforeach
+                        </select>
+
+                        <input type="number" class="form-control col-5 mr-4" name="number_of_product[]" value="{{ old('Value', '') }}" placeholder="{{ trans('cruds.order.fields.number_of_product') }}">
+
+                        <button type="button" name="add" id="add" class="btn btn-primary">Add More</button>
                     </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.order.fields.product_helper') }}</span>
-            </div>
-            <div class="form-group">
-                <label class="required" for="number_of_product">{{ trans('cruds.order.fields.number_of_product') }}</label>
-                <input class="form-control {{ $errors->has('number_of_product') ? 'is-invalid' : '' }}" type="number" name="number_of_product" id="number_of_product" value="{{ old('number_of_product', '') }}" step="1" required>
-                @if($errors->has('number_of_product'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('number_of_product') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.order.fields.number_of_product_helper') }}</span>
-            </div>
+
+                    @if($errors->has('product_id'))
+                        <div class="invalid-feedback">
+                            {{ $errors->first('product_id') }}
+                        </div>
+                    @endif
+                    @if($errors->has('number_of_product'))
+                        <div class="invalid-feedback">
+                            {{ $errors->first('number_of_product') }}
+                        </div>
+                    @endif
+                </div>
+            @endif
             <div class="form-group">
                 <label class="required">{{ trans('cruds.order.fields.payment_method') }}</label>
                 <select class="form-control {{ $errors->has('payment_method') ? 'is-invalid' : '' }}" name="payment_method" id="payment_method" required>
@@ -78,7 +120,7 @@
             </div>
             <div class="form-group">
                 <label for="tax_id">{{ trans('cruds.order.fields.tax') }}</label>
-                <select class="form-control select2 {{ $errors->has('tax') ? 'is-invalid' : '' }}" name="tax_id" id="tax_id">
+                <select class="form-control #address_id {{ $errors->has('tax') ? 'is-invalid' : '' }}" name="tax_id" id="tax_id">
                     @foreach($taxes as $id => $tax)
                         <option value="{{ $id }}" {{ old('tax_id') == $id ? 'selected' : '' }}>{{ $tax }}</option>
                     @endforeach
@@ -92,7 +134,7 @@
             </div>
             <div class="form-group">
                 <label for="delivery_fee_id">{{ trans('cruds.order.fields.delivery_fee') }}</label>
-                <select class="form-control select2 {{ $errors->has('delivery_fee') ? 'is-invalid' : '' }}" name="delivery_fee_id" id="delivery_fee_id">
+                <select class="form-control #address_id {{ $errors->has('delivery_fee') ? 'is-invalid' : '' }}" name="delivery_fee_id" id="delivery_fee_id">
                     @foreach($delivery_fees as $id => $delivery_fee)
                         <option value="{{ $id }}" {{ old('delivery_fee_id') == $id ? 'selected' : '' }}>{{ $delivery_fee }}</option>
                     @endforeach
@@ -109,7 +151,7 @@
                 <select class="form-control {{ $errors->has('status') ? 'is-invalid' : '' }}" name="status" id="status">
                     <option value disabled {{ old('status', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
                     @foreach(App\Models\Order::STATUS_SELECT as $key => $label)
-                        <option value="{{ $key }}" {{ old('status', 'option_processing') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                        <option value="{{ $key }}" {{ old('status', 'option-processing') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
                     @endforeach
                 </select>
                 @if($errors->has('status'))
@@ -119,7 +161,7 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.order.fields.status_helper') }}</span>
             </div>
-            <div class="form-group">
+            {{-- <div class="form-group">
                 <label class="required" for="total_amount">{{ trans('cruds.order.fields.total_amount') }}</label>
                 <input class="form-control {{ $errors->has('total_amount') ? 'is-invalid' : '' }}" type="number" name="total_amount" id="total_amount" value="{{ old('total_amount', '') }}" step="0.01" required>
                 @if($errors->has('total_amount'))
@@ -128,7 +170,7 @@
                     </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.order.fields.total_amount_helper') }}</span>
-            </div>
+            </div> --}}
             <div class="form-group">
                 <label for="note">{{ trans('cruds.order.fields.note') }}</label>
                 <textarea class="form-control ckeditor {{ $errors->has('note') ? 'is-invalid' : '' }}" name="note" id="note">{!! old('note') !!}</textarea>
@@ -216,5 +258,33 @@
   }
 });
 </script>
+<script type="text/javascript">
+    $(document).ready(function(){
 
+      var i = 1;
+
+      $("#add").click(function(){
+        i++;
+        $('#dynamic_field').append('<div class="form-row mb-2" id="row'+i+'"><select class="form-control col-5 mr-4 #address_id" name="products[]" id="product_id" required>@foreach($products as $id => $product)<option value="{{ $id }}" {{ old('product_id') == $id ? 'selected' : '' }}>{{ $product }}</option>@endforeach</select><input type="number" class="form-control col-5 mr-4" name="number_of_product[]"  value="{{ old('Value', '') }}" placeholder="{{ trans('cruds.order.fields.number_of_product') }}"> <button type="button" name="remove" id="'+i+'" class="btn btn-danger btn_remove">X</button> </div>');
+    });
+
+      $(document).on('click', '.btn_remove', function(){
+        var button_id = $(this).attr("id");
+        $('#row'+button_id+'').remove();
+      });
+
+    });
+</script>
+<script>
+    $('#client_id').change(function() {
+        $('#address_id option').hide();
+        $('#address_id option[id="' + $(this).val() + '"]').show();
+        if ($('#address_id option[id="' + $(this).val() + '"]').length) {
+            $('#address_id option[id="' + $(this).val() + '"]').first().prop('selected', true);
+        }
+        else {
+            $('#address_id').val('');
+        };
+    });
+</script>
 @endsection

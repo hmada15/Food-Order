@@ -47,4 +47,9 @@ class ClientAddress extends Model
     {
         return $this->belongsTo(Client::class, 'client_id');
     }
+
+    public function scopeAuthorized($query)
+    {
+        return $query->where('client_id', auth()->id());
+    }
 }

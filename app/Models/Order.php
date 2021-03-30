@@ -29,17 +29,18 @@ class Order extends Model implements HasMedia
     ];
 
     const STATUS_SELECT = [
-        'option_pending'    => 'Pending',
-        'option_processing' => 'Processing',
-        'option_completed'  => 'Completed',
-        'option_cancelled'  => 'Cancelled',
-        'option_refunded'   => 'Refunded',
+        'option-pending'    => 'Pending',
+        'option-processing' => 'Processing',
+        'option-completed'  => 'Completed',
+        'option-cancelled'  => 'Cancelled',
+        'option-refunded'   => 'Refunded',
     ];
 
     protected $fillable = [
         'client_id',
         'address_id',
         'product_id',
+        'product',
         'number_of_product',
         'payment_method',
         'tax_id',
@@ -73,9 +74,9 @@ class Order extends Model implements HasMedia
         return $this->belongsTo(ClientAddress::class, 'address_id');
     }
 
-    public function product()
+    public function products()
     {
-        return $this->belongsTo(Product::class, 'product_id');
+        return $this->belongsToMany(Product::class)->withPivot('number_of_product');
     }
 
     public function tax()
@@ -87,4 +88,11 @@ class Order extends Model implements HasMedia
     {
         return $this->belongsTo(DeliveryFee::class, 'delivery_fee_id');
     }
+
+    public function scopeAuthorized($query)
+    {
+        return $query->where('client_id', auth()->id());
+    }
+
+
 }

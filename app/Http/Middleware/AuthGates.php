@@ -2,9 +2,10 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Role;
 use Closure;
+use App\Models\Role;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Cache;
 
 class AuthGates
 {
@@ -13,7 +14,11 @@ class AuthGates
         $user = \Auth::user();
 
         if ($user) {
-            $roles            = Role::with('permissions')->get();
+            //Cacahe roles with permissions for one month.
+            $roles            = Cache::remember('role-permissions', 2629743, function () {
+                return Role::with('permissions')->get();
+            });
+
             $permissionsArray = [];
 
             foreach ($roles as $role) {

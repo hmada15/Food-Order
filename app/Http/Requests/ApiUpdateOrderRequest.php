@@ -2,12 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Order;
-use Gate;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Response;
 
-class UpdateOrderRequest extends FormRequest
+class ApiUpdateOrderRequest extends FormRequest
 {
     public function authorize()
     {
@@ -17,17 +14,13 @@ class UpdateOrderRequest extends FormRequest
     public function rules()
     {
         return [
-            'client_id'         => [
-                'required',
-                'integer',
-            ],
             'address_id'        => [
                 'required',
                 'integer',
             ],
             'products'          => [
                 'required',
-                'array'
+                'json'
             ],
             'products.*'       => [
                 'required',
@@ -36,7 +29,7 @@ class UpdateOrderRequest extends FormRequest
             ],
             'number_of_product'=> [
                 'required',
-                'array'
+                'json'
             ],
             'number_of_product.*'=> [
                 'required',
@@ -46,6 +39,11 @@ class UpdateOrderRequest extends FormRequest
             ],
             'payment_method'    => [
                 'required',
+                'in:option-cash,option-app-wallet,option-card,option-digital-wallet'
+            ],
+            'status'    => [
+                'required',
+                'in:option-pending,option-processing,option-completed,option-cancelled,option-refunded,'
             ]
         ];
     }

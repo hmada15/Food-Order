@@ -58,7 +58,7 @@
                 <label class="required">{{ trans('cruds.productCategory.fields.is_publish') }}</label>
                 @foreach(App\Models\ProductCategory::IS_PUBLISH_RADIO as $key => $label)
                     <div class="form-check {{ $errors->has('is_publish') ? 'is-invalid' : '' }}">
-                        <input class="form-check-input" type="radio" id="is_publish_{{ $key }}" name="is_publish" value="{{ $key }}" {{ old('is_publish', 'option_yes') === (string) $key ? 'checked' : '' }} required>
+                        <input class="form-check-input" type="radio" id="is_publish_{{ $key }}" name="is_publish" value="{{ $key }}" {{ old('is_publish', 'option-yes') === (string) $key ? 'checked' : '' }} required>
                         <label class="form-check-label" for="is_publish_{{ $key }}">{{ $label }}</label>
                     </div>
                 @endforeach

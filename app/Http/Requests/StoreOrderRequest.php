@@ -2,10 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Order;
 use Gate;
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Response;
 
 class StoreOrderRequest extends FormRequest
 {
@@ -24,23 +23,30 @@ class StoreOrderRequest extends FormRequest
             'address_id'        => [
                 'required',
                 'integer',
+                'exists:client_addresses,id'
             ],
-            'product_id'        => [
+            'products'          => [
+                'required',
+                'array'
+            ],
+            'products.*'       => [
                 'required',
                 'integer',
+                'exists:products,id'
             ],
-            'number_of_product' => [
+            'number_of_product'=> [
+                'required',
+                'array'
+            ],
+            'number_of_product.*'=> [
                 'required',
                 'integer',
-                'min:-2147483648',
+                'min:1',
                 'max:2147483647',
             ],
             'payment_method'    => [
                 'required',
-            ],
-            'total_amount'      => [
-                'required',
-            ],
+            ]
         ];
     }
 }

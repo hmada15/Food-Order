@@ -26,8 +26,8 @@ class Product extends Model implements HasMedia
     ];
 
     const IN_STOCK_RADIO = [
-        'option_yes' => 'yes',
-        'option_no'  => 'no',
+        'option-yes' => 'yes',
+        'option-no'  => 'no',
     ];
 
     protected $fillable = [

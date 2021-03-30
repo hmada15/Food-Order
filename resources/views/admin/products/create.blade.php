@@ -20,6 +20,20 @@
                 <span class="help-block">{{ trans('cruds.product.fields.name_helper') }}</span>
             </div>
             <div class="form-group">
+                <label class="required" for="category_id">{{ trans('cruds.product.fields.category') }}</label>
+                <select class="form-control select2 {{ $errors->has('category') ? 'is-invalid' : '' }}" name="category_id" id="category_id" required>
+                    @foreach($categories as $id => $category)
+                        <option value="{{ $id }}" {{ old('category_id') == $id ? 'selected' : '' }}>{{ $category }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('category'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('category') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.product.fields.category_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <label for="tags">{{ trans('cruds.product.fields.tag') }}</label>
                 <div style="padding-bottom: 4px">
                     <span class="btn btn-info btn-xs select-all" style="border-radius: 0">{{ trans('global.select_all') }}</span>
@@ -106,7 +120,7 @@
                 <label class="required">{{ trans('cruds.product.fields.in_stock') }}</label>
                 @foreach(App\Models\Product::IN_STOCK_RADIO as $key => $label)
                     <div class="form-check {{ $errors->has('in_stock') ? 'is-invalid' : '' }}">
-                        <input class="form-check-input" type="radio" id="in_stock_{{ $key }}" name="in_stock" value="{{ $key }}" {{ old('in_stock', 'option_yes') === (string) $key ? 'checked' : '' }} required>
+                        <input class="form-check-input" type="radio" id="in_stock_{{ $key }}" name="in_stock" value="{{ $key }}" {{ old('in_stock', 'option-yes') === (string) $key ? 'checked' : '' }} required>
                         <label class="form-check-label" for="in_stock_{{ $key }}">{{ $label }}</label>
                     </div>
                 @endforeach
@@ -116,20 +130,6 @@
                     </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.product.fields.in_stock_helper') }}</span>
-            </div>
-            <div class="form-group">
-                <label class="required" for="category_id">{{ trans('cruds.product.fields.category') }}</label>
-                <select class="form-control select2 {{ $errors->has('category') ? 'is-invalid' : '' }}" name="category_id" id="category_id" required>
-                    @foreach($categories as $id => $category)
-                        <option value="{{ $id }}" {{ old('category_id') == $id ? 'selected' : '' }}>{{ $category }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('category'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('category') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.product.fields.category_helper') }}</span>
             </div>
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">

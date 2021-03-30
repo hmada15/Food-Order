@@ -29,4 +29,13 @@ class Permission extends Model
     {
         return $date->format('Y-m-d H:i:s');
     }
+    
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function() {
+            Cache::forget('role-permissions');
+        });
+    }
 }

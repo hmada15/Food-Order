@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use Gate;
+use App\Models\Client;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreClientRequest;
 use App\Http\Requests\UpdateClientRequest;
 use App\Http\Resources\Admin\ClientResource;
-use App\Models\Client;
-use Gate;
-use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class ClientsApiController extends Controller
@@ -29,9 +30,9 @@ class ClientsApiController extends Controller
             ->setStatusCode(Response::HTTP_CREATED);
     }
 
-    public function show(Client $client)
+    public function show()
     {
-        abort_if(Gate::denies('client_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        $client = Auth::user();
 
         return new ClientResource($client);
     }

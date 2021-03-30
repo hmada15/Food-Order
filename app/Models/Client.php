@@ -2,18 +2,22 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use \DateTimeInterface;
 
-class Client extends Model
+use Carbon\Carbon;
+use \DateTimeInterface;
+use Illuminate\Support\Facades\Hash;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+
+class Client extends Authenticatable
 {
-    use SoftDeletes;
+
+    use HasApiTokens;
 
     public $table = 'clients';
 
     protected $hidden = [
+        'remember_token',
         'password',
     ];
 
@@ -73,5 +77,17 @@ class Client extends Model
     public function setDateOfBirthAttribute($value)
     {
         $this->attributes['date_of_birth'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
+    }
+
+    public function setPasswordAttribute($input)
+    {
+        if ($input) {
+            $this->attributes['password'] = app('hash')->needsRehash($input) ? Hash::make($input) : $input;
+        }
+    }
+
+    public function clientAddress()
+    {
+        return $this->hasMany(ClientAddress::class);
     }
 }

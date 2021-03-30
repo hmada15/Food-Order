@@ -152,10 +152,14 @@
                                 {{ $order->address->street_name ?? '' }}
                             </td>
                             <td>
-                                {{ $order->product->name ?? '' }}
+                                @foreach ($order->products as $product)
+                                    {{ $product->name ?? '' }}<br>
+                                @endforeach
                             </td>
                             <td>
-                                {{ $order->number_of_product ?? '' }}
+                                @foreach ($order->products as $product)
+                                    {{$product->pivot->number_of_product ?? '' }}<br>
+                                @endforeach
                             </td>
                             <td>
                                 {{ App\Models\Order::PAYMENT_METHOD_SELECT[$order->payment_method] ?? '' }}
@@ -251,7 +255,7 @@
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();
   });
-  
+
 let visibleColumnsIndexes = null;
 $('.datatable thead').on('input', '.search', function () {
       let strict = $(this).attr('strict') || false

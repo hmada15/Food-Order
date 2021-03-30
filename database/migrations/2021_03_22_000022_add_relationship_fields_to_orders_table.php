@@ -11,8 +11,6 @@ class AddRelationshipFieldsToOrdersTable extends Migration
         Schema::table('orders', function (Blueprint $table) {
             $table->unsignedBigInteger('client_id');
             $table->foreign('client_id', 'client_fk_3494623')->references('id')->on('clients');
-            $table->unsignedBigInteger('product_id');
-            $table->foreign('product_id', 'product_fk_3494624')->references('id')->on('products');
             $table->unsignedBigInteger('address_id');
             $table->foreign('address_id', 'address_fk_3494699')->references('id')->on('client_addresses');
             $table->unsignedBigInteger('tax_id')->nullable();

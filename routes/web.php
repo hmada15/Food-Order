@@ -2,11 +2,13 @@
 
 
 Route::redirect('/', '/login');
+
 Route::get('test', function(){
     $user = \Auth::user();
     $user->tokens()->delete();
     return $user->createToken('auth-token')->plainTextToken;
 });
+
 Route::get('/home', function () {
     if (session('status')) {
         return redirect()->route('admin.home')->with('status', session('status'));

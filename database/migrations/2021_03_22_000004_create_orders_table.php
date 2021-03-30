@@ -10,7 +10,6 @@ class CreateOrdersTable extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('number_of_product');
             $table->string('payment_method');
             $table->decimal('total_amount', 15, 2);
             $table->string('status')->nullable();

@@ -161,7 +161,7 @@
                 </a>
             </li>
         @endcan
-        @can('option_access')
+        @can('option-access')
             <li class="c-sidebar-nav-dropdown {{ request()->is("admin/tax-values*") ? "c-show" : "" }} {{ request()->is("admin/delivery-fees*") ? "c-show" : "" }}">
                 <a class="c-sidebar-nav-dropdown-toggle" href="#">
                     <i class="fa-fw fas fa-cogs c-sidebar-nav-icon">

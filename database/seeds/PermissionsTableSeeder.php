@@ -290,7 +290,7 @@ class PermissionsTableSeeder extends Seeder
             ],
             [
                 'id'    => 71,
-                'title' => 'option-accesst',
+                'title' => 'option-access',
             ],
         ];
 

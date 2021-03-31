@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
+use \DateTimeInterface;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use \DateTimeInterface;
 
 class Permission extends Model
 {
@@ -29,7 +30,7 @@ class Permission extends Model
     {
         return $date->format('Y-m-d H:i:s');
     }
-    
+
     protected static function boot()
     {
         parent::boot();

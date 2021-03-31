@@ -17,11 +17,11 @@ class OrderResource extends JsonResource
             "total_amount"      => $this->total_amount,
             "created_at"        => $this->created_at,
             "updated_at"        => $this->updated_at,
-            'client'            => new ClientResource($this->whenLoaded('client')),
-            'address'           => new ClientAddressResource($this->whenLoaded('address')),
-            'products'          => new ProductResource($this->whenLoaded('products')),
-            'tax'               => new TaxValueResource($this->whenLoaded('tax')),
-            'delivery_fee'      => new DeliveryFeeResource($this->whenLoaded('delivery_fee')),
+            "client"            => new ClientResource($this->whenLoaded("client")),
+            "address"           => new ClientAddressResource($this->whenLoaded("address")),
+            "products"          => new ProductResource($this->whenLoaded("products")),
+            "tax"               => new TaxValueResource($this->whenLoaded("tax")),
+            "delivery_fee"      => new DeliveryFeeResource($this->whenLoaded("delivery_fee")),
         ];
     }
 }

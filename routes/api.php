@@ -16,15 +16,10 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'middleware' => ['auth:sanctum']
 
     // Orders
     Route::apiResource('orders', 'Api\V1\OrdersApiController')->except("destroy");
-
-    // Tax Values
-    Route::apiResource('tax-values', 'Api\V1\TaxValuesApiController')->only("index","show");
-
-    // Delivery Fees
-    Route::apiResource('delivery-fees', 'Api\V1\DeliveryFeesApiController')->only("index","show");
 });
 
 Route::group(['prefix' => 'v1', 'as' => 'api.'], function () {
+    
     // Product Categories
     Route::apiResource('product-categories', 'Api\V1\ProductCategoryApiController')->only("index","show");
     // Product Tags
@@ -35,4 +30,8 @@ Route::group(['prefix' => 'v1', 'as' => 'api.'], function () {
     Route::apiResource('product-attributes', 'Api\V1\ProductAttributesApiController')->only("index","show");
     // Brands
     Route::apiResource('brands', 'Api\V1\BrandsApiController')->only("index","show");
+    // Tax Values
+    Route::apiResource('tax-values', 'Api\V1\TaxValuesApiController')->only("index","show");
+    // Delivery Fees
+    Route::apiResource('delivery-fees', 'Api\V1\DeliveryFeesApiController')->only("index","show");
 });

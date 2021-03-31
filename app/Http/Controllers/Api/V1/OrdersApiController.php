@@ -64,18 +64,29 @@ class OrdersApiController extends Controller
             ->setStatusCode(Response::HTTP_CREATED);
     }
 
-    public function show(Order $order)
+    public function show($id)
     {
-        return new OrderResource($order->load(['client', 'address', 'products', 'tax', 'delivery_fee']));
+        try {
+            $order = Order::Authorized()->where("id",$id)->with(['client', 'address', 'products', 'tax', 'delivery_fee'])->firstOrFail();
+        } catch (\Throwable $th) {
+            abort(404,"Unauthorized Or Not found");
+        }
+        return new OrderResource($order);
     }
 
-    public function update(ApiUpdateOrderRequest $request, Order $order)
+    public function update(ApiUpdateOrderRequest $request,$id)
     {
+        try {
+            $order = Order::Authorized()->where("id",$id)->firstOrFail();
+        } catch (\Throwable $th) {
+            abort(404, "Unauthorized Or Not found");
+        }
+
         $all_products_prices = [];
         //Get product prices
         $products = json_decode($request->products);
-        foreach($products as $id){
-            $product = Product::where("id", $id)->get(["regular_price", "sale_price"])->first();
+        foreach($products as $product_id){
+            $product = Product::where("id", $product_id)->get(["regular_price", "sale_price"])->first();
             array_push($all_products_prices,!empty($product->sale_price) ? $product->sale_price : $product->regular_price);
         }
         $number_of_product = json_decode($request->number_of_product);

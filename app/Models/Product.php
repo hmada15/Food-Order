@@ -30,6 +30,12 @@ class Product extends Model implements HasMedia
         'option-no'  => 'no',
     ];
 
+
+    const IS_PUBLISH_RADIO = [
+        'option-yes' => 'yes',
+        'option-no'  => 'no',
+    ];
+
     protected $fillable = [
         'name',
         'slug',
@@ -39,6 +45,7 @@ class Product extends Model implements HasMedia
         'sale_price',
         'sku',
         'in_stock',
+        'is_publish',
         'category_id',
         'created_at',
         'updated_at',
@@ -81,5 +88,10 @@ class Product extends Model implements HasMedia
     public function category()
     {
         return $this->belongsTo(ProductCategory::class, 'category_id');
+    }
+
+    public function scopeIsPublish($query)
+    {
+        return $query->where('is_publish', 'option-yes');
     }
 }

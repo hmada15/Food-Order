@@ -103,6 +103,14 @@
                     </tr>
                     <tr>
                         <th>
+                            {{ trans('cruds.product.fields.is_publish') }}
+                        </th>
+                        <td>
+                            {{ App\Models\Product::IS_PUBLISH_RADIO[$product->is_publish] ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
                             {{ trans('cruds.product.fields.category') }}
                         </th>
                         <td>

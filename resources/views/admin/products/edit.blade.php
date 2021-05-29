@@ -133,6 +133,21 @@
                 <span class="help-block">{{ trans('cruds.product.fields.in_stock_helper') }}</span>
             </div>
             <div class="form-group">
+                <label class="required">{{ trans('cruds.product.fields.is_publish') }}</label>
+                @foreach(App\Models\Product::IS_PUBLISH_RADIO as $key => $label)
+                    <div class="form-check {{ $errors->has('is_publish') ? 'is-invalid' : '' }}">
+                        <input class="form-check-input" type="radio" id="is_publish_{{ $key }}" name="is_publish" value="{{ $key }}" {{ old('is_publish', $product->is_publish) === (string) $key ? 'checked' : '' }} required>
+                        <label class="form-check-label" for="is_publish_{{ $key }}">{{ $label }}</label>
+                    </div>
+                @endforeach
+                @if($errors->has('is_publish'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('is_publish') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.product.fields.is_publish_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <button class="btn btn-danger" type="submit">
                     {{ trans('global.save') }}
                 </button>

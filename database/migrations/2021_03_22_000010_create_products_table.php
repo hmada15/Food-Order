@@ -14,8 +14,9 @@ class CreateProductsTable extends Migration
             $table->longText('description')->nullable();
             $table->decimal('regular_price', 15, 2)->nullable();
             $table->decimal('sale_price', 15, 2)->nullable();
-            $table->integer('sku')->nullable();
+            $table->string('sku')->nullable();
             $table->string('in_stock')->nullable();
+            $table->string('is_publish')->nullable();
             $table->string('slug')->nullable();
             $table->timestamps();
             $table->softDeletes();

@@ -141,6 +141,8 @@ return [
             'sku_helper'           => ' ',
             'in_stock'             => 'In Stock',
             'in_stock_helper'      => ' ',
+            'is_publish'             => 'Is publish',
+            'is_publish_helper'      => ' ',
             'slug'                 => 'Slug',
             'slug_helper'          => ' ',
             'brand'                => 'Brand',

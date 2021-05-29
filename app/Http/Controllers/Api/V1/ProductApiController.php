@@ -13,12 +13,12 @@ class ProductApiController extends Controller
 
     public function index()
     {
-        return new ProductResource(Product::with(['tags', 'brand', 'category'])->get());
+        return new ProductResource(Product::isPublish()->with(['tags', 'brand', 'category'])->get());
     }
 
     public function show(Product $product)
     {
-       return new ProductResource($product->load(['tags', 'brand', 'category']));
+       return new ProductResource($product->isPublish()->load(['tags', 'brand', 'category']));
     }
 
 }

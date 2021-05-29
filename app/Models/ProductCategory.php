@@ -69,4 +69,9 @@ class ProductCategory extends Model implements HasMedia
 
         return $file;
     }
+
+    public function scopeIsPublish($query)
+    {
+        return $query->where('is_publish', 'option-yes');
+    }
 }

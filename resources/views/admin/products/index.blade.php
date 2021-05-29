@@ -44,6 +44,9 @@
                             {{ trans('cruds.product.fields.in_stock') }}
                         </th>
                         <th>
+                            {{ trans('cruds.product.fields.is_publish') }}
+                        </th>
+                        <th>
                             {{ trans('cruds.product.fields.category') }}
                         </th>
                         <th>
@@ -93,6 +96,14 @@
                             </select>
                         </td>
                         <td>
+                            <select class="search" strict="true">
+                                <option value>{{ trans('global.all') }}</option>
+                                @foreach(App\Models\Product::IS_PUBLISH_RADIO as $key => $item)
+                                    <option value="{{ $item }}">{{ $item }}</option>
+                                @endforeach
+                            </select>
+                        </td>
+                        <td>
                         </td>
                     </tr>
                 </thead>
@@ -122,6 +133,9 @@
                             </td>
                             <td>
                                 {{ App\Models\Product::IN_STOCK_RADIO[$product->in_stock] ?? '' }}
+                            </td>
+                            <td>
+                                {{ App\Models\Product::IS_PUBLISH_RADIO[$product->is_publish] ?? '' }}
                             </td>
                             <td>
                                 {{ $product->category->name ?? '' }}
@@ -205,7 +219,7 @@
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();
   });
-  
+
 let visibleColumnsIndexes = null;
 $('.datatable thead').on('input', '.search', function () {
       let strict = $(this).attr('strict') || false

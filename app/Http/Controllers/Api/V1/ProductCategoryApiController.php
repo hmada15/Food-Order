@@ -15,9 +15,10 @@ class ProductCategoryApiController extends Controller
     {
         return new ProductCategoryResource(ProductCategory::isPublish()->with(['parent_category'])->get());
     }
-    public function show(ProductCategory $productCategory)
+    public function show($id)
     {
-        return new ProductCategoryResource($productCategory->isPublish()->load(['parent_category']));
+        $productCategory = ProductCategory::isPublish()->with(['parent_category'])->find($id);
+        return new ProductCategoryResource($productCategory);
     }
 
 }

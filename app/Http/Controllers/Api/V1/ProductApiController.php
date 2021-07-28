@@ -16,9 +16,10 @@ class ProductApiController extends Controller
         return new ProductResource(Product::isPublish()->with(['tags', 'brand', 'category'])->get());
     }
 
-    public function show(Product $product)
+    public function show($id)
     {
-       return new ProductResource($product->isPublish()->load(['tags', 'brand', 'category']));
+        $product = Product::isPublish()->with(['tags', 'brand', 'category'])->find($id);
+        return new ProductResource($product);
     }
 
 }

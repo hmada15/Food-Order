@@ -19,19 +19,19 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'middleware' => ['auth:sanctum']
 });
 
 Route::group(['prefix' => 'v1', 'as' => 'api.'], function () {
-    
+
     // Product Categories
-    Route::apiResource('product-categories', 'Api\V1\ProductCategoryApiController')->only("index","show");
+    Route::apiResource('product-categories', 'Api\V1\ProductCategoryApiController')->only("index", "show");
     // Product Tags
-    Route::apiResource('product-tags', 'Api\V1\ProductTagApiController')->only("index","show");
+    Route::apiResource('product-tags', 'Api\V1\ProductTagApiController')->only("index", "show");
     // Products
-    Route::apiResource('products', 'Api\V1\ProductApiController')->only("index","show");
+    Route::apiResource('products', 'Api\V1\ProductApiController')->only("index", "show");
     // Product Attributes
-    Route::apiResource('product-attributes', 'Api\V1\ProductAttributesApiController')->only("index","show");
+    Route::apiResource('product-attributes', 'Api\V1\ProductAttributesApiController')->only("index", "show");
     // Brands
-    Route::apiResource('brands', 'Api\V1\BrandsApiController')->only("index","show");
+    Route::apiResource('brands', 'Api\V1\BrandsApiController')->only("index", "show");
     // Tax Values
-    Route::apiResource('tax-values', 'Api\V1\TaxValuesApiController')->only("index","show");
+    Route::apiResource('tax-values', 'Api\V1\TaxValuesApiController')->only("index", "show");
     // Delivery Fees
-    Route::apiResource('delivery-fees', 'Api\V1\DeliveryFeesApiController')->only("index","show");
+    Route::apiResource('delivery-fees', 'Api\V1\DeliveryFeesApiController')->only("index", "show");
 });

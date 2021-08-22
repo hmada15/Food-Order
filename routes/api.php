@@ -2,7 +2,6 @@
 
 Route::post('login', 'Api\v1\AuthController@login');
 Route::post('register', 'Api\v1\AuthController@register');
-Route::apiResource('client-addresses', 'Api\V1\ClientAddressesApiController');
 
 //Nmaespace group remove because IDE extension don't regonise it
 Route::group(['prefix' => 'v1', 'as' => 'api.', 'middleware' => ['auth:sanctum']], function () {
@@ -15,7 +14,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'middleware' => ['auth:sanctum']
     Route::apiResource('client-addresses', 'Api\V1\ClientAddressesApiController')->except("show");
 
     // Orders
-    Route::apiResource('orders', 'Api\V1\OrdersApiController')->except("destroy");
+    Route::apiResource('orders', 'Api\V1\OrdersApiController')->except('update', "destroy");
 });
 
 Route::group(['prefix' => 'v1', 'as' => 'api.'], function () {

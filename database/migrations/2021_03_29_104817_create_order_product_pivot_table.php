@@ -18,7 +18,7 @@ class CreateOrderProductPivotTable extends Migration
             $table->foreign('order_id', 'order_id_fk_3486955')->references('id')->on('orders')->onDelete('cascade');
             $table->unsignedBigInteger('product_id');
             $table->foreign('product_id', 'product_id_fk_3487255')->references('id')->on('products')->onDelete('cascade');
-            $table->integer('number_of_product');
+            $table->integer('number_of_product')->nullable();
         });
     }
 

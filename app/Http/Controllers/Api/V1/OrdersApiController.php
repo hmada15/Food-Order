@@ -30,7 +30,7 @@ class OrdersApiController extends Controller
     public function show($id)
     {
         try {
-            $order = Order::Authorized()->where("id", $id)->with(['client', 'address', 'products', 'tax', 'delivery_fee'])->firstOrFail();
+            $order = Order::Authorized()->with(['client', 'address', 'products', 'tax', 'delivery_fee'])->findOrFail($id);
         } catch (\Throwable $th) {
             abort(404, "Unauthorized Or Not found");
         }

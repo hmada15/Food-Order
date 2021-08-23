@@ -15,6 +15,10 @@ class Brand extends Model implements HasMedia
 
     public $table = 'brands';
 
+    protected $with = [
+        'media'
+    ];
+
     protected $appends = [
         'photo',
     ];

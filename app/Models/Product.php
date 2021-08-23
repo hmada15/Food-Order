@@ -15,6 +15,10 @@ class Product extends Model implements HasMedia
 
     public $table = 'products';
 
+    protected $with = [
+        'media',
+    ];
+
     protected $appends = [
         'photo',
     ];
@@ -27,13 +31,12 @@ class Product extends Model implements HasMedia
 
     const IN_STOCK_RADIO = [
         'option-yes' => 'yes',
-        'option-no'  => 'no',
+        'option-no' => 'no',
     ];
-
 
     const IS_PUBLISH_RADIO = [
         'option-yes' => 'yes',
-        'option-no'  => 'no',
+        'option-no' => 'no',
     ];
 
     protected $fillable = [
@@ -77,9 +80,9 @@ class Product extends Model implements HasMedia
     {
         $files = $this->getMedia('photo');
         $files->each(function ($item) {
-            $item->url       = $item->getUrl();
+            $item->url = $item->getUrl();
             $item->thumbnail = $item->getUrl('thumb');
-            $item->preview   = $item->getUrl('preview');
+            $item->preview = $item->getUrl('preview');
         });
 
         return $files;
@@ -93,5 +96,12 @@ class Product extends Model implements HasMedia
     public function scopeIsPublish($query)
     {
         return $query->where('is_publish', 'option-yes');
+    }
+
+    public function scopeIsCategoryPublish($query)
+    {
+        return $query->whereHas('category', function ($q) {
+            $q->where('is_publish', 'option-yes');
+        });
     }
 }

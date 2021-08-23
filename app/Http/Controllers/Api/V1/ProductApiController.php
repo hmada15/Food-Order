@@ -13,12 +13,17 @@ class ProductApiController extends Controller
 
     public function index()
     {
-        return new ProductResource(Product::isPublish()->with(['tags', 'brand', 'category'])->get());
+        //isPublish and isCategoryPUblish are local scope on Product model
+        return new ProductResource(Product::isPublish()->isCategoryPUblish()->with(['tags', 'brand', 'category'])->get());
     }
 
     public function show($id)
     {
-        $product = Product::isPublish()->with(['tags', 'brand', 'category'])->find($id);
+        try {
+            $product = Product::isPublish()->isCategoryPublish()->with(['tags', 'brand', 'category'])->findOrFail($id);
+        } catch (\Throwable $th) {
+            abort(404, "Not found");
+        }
         return new ProductResource($product);
     }
 

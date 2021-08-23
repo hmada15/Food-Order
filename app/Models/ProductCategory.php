@@ -13,6 +13,10 @@ class ProductCategory extends Model implements HasMedia
 {
     use SoftDeletes, HasMediaTrait;
 
+    protected $with = [
+        'media'
+    ];
+
     protected $appends = [
         'photo',
     ];

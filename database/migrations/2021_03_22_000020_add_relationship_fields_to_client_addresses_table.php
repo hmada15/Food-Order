@@ -9,7 +9,7 @@ class AddRelationshipFieldsToClientAddressesTable extends Migration
     public function up()
     {
         Schema::table('client_addresses', function (Blueprint $table) {
-            $table->unsignedBigInteger('client_id');
+            $table->unsignedBigInteger('client_id')->nullable();
             $table->foreign('client_id', 'client_fk_3487892')->references('id')->on('clients');
         });
     }

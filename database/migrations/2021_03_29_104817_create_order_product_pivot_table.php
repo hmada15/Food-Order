@@ -14,9 +14,9 @@ class CreateOrderProductPivotTable extends Migration
     public function up()
     {
         Schema::create('order_product', function (Blueprint $table) {
-            $table->unsignedBigInteger('order_id');
+            $table->unsignedBigInteger('order_id')->nullable();
             $table->foreign('order_id', 'order_id_fk_3486955')->references('id')->on('orders')->onDelete('cascade');
-            $table->unsignedBigInteger('product_id');
+            $table->unsignedBigInteger('product_id')->nullable();
             $table->foreign('product_id', 'product_id_fk_3487255')->references('id')->on('products')->onDelete('cascade');
             $table->integer('number_of_product')->nullable();
         });

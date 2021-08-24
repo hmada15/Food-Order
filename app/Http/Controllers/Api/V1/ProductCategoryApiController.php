@@ -17,7 +17,11 @@ class ProductCategoryApiController extends Controller
     }
     public function show($id)
     {
-        $productCategory = ProductCategory::isPublish()->with(['parent_category'])->find($id);
+        try {
+            $productCategory = ProductCategory::isPublish()->with(['parent_category'])->findOrFail($id);
+        } catch (\Throwable $th) {
+            abort(404, "Not found");
+        }
         return new ProductCategoryResource($productCategory);
     }
 

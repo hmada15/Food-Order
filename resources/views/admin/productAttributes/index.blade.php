@@ -92,7 +92,13 @@
                                 {{ $productAttribute->parent_attribute->name ?? '' }}
                             </td>
                             <td>
-                                {{ $productAttribute->name_value ?? '' }}
+                                @php $productAttribute_name_value = json_decode($productAttribute->name_value,true); @endphp
+                                @foreach ($productAttribute_name_value as $name => $value)
+                                    <span class="d-block">
+                                        {{ $name }} =>
+                                        {{ $value }}
+                                    </span>
+                                @endforeach
                             </td>
                             <td>
                                 @can('product_attribute_show')
@@ -173,7 +179,7 @@
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();
   });
-  
+
 let visibleColumnsIndexes = null;
 $('.datatable thead').on('input', '.search', function () {
       let strict = $(this).attr('strict') || false

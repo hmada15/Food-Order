@@ -51,8 +51,18 @@
                         <th>
                             {{ trans('cruds.productAttribute.fields.name_value') }}
                         </th>
+                        @php $productAttribute_name_value = json_decode($productAttribute->name_value,true); @endphp
                         <td>
-                            {{ $productAttribute->name_value }}
+                            <span class="d-block">
+                                {{ trans('cruds.productAttribute.fields.value_placeholder_name') }} =>
+                                {{ trans('cruds.productAttribute.fields.value_placeholder_value') }}
+                            </span>
+                            @foreach ($productAttribute_name_value as $name => $value)
+                            <span class="d-block">
+                                {{ $name }} =>
+                                {{ $value }}
+                            </span>
+                            @endforeach
                         </td>
                     </tr>
                 </tbody>

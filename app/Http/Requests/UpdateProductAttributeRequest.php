@@ -25,9 +25,21 @@ class UpdateProductAttributeRequest extends FormRequest
                 'required',
                 'integer',
             ],
-            'name_value' => [
-                'string',
+            'attribute_name.*' => [
                 'required',
+                'string',
+            ],
+            'attribute_name' => [
+                'required',
+                'array',
+            ],
+            'value' => [
+                'required',
+                'array',
+            ],
+            'value.*' => [
+                'required',
+                'string',
             ],
         ];
     }

@@ -2,10 +2,8 @@
 
 namespace App\Http\Requests;
 
-use App\Models\ProductAttribute;
 use Gate;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Response;
 
 class StoreProductAttributeRequest extends FormRequest
 {
@@ -17,7 +15,7 @@ class StoreProductAttributeRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'       => [
+            'name' => [
                 'string',
                 'required',
             ],
@@ -25,10 +23,23 @@ class StoreProductAttributeRequest extends FormRequest
                 'required',
                 'integer',
             ],
-            'name_value' => [
-                'string',
+            'attribute_name.*' => [
                 'required',
+                'string',
             ],
+            'attribute_name' => [
+                'required',
+                'array',
+            ],
+            'value' => [
+                'required',
+                'array',
+            ],
+            'value.*' => [
+                'required',
+                'string',
+            ],
+
         ];
     }
 }

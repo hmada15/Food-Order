@@ -48,15 +48,36 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.productAttribute.fields.parent_attribute_helper') }}</span>
             </div>
-            <div class="form-group">
-                <label class="required" for="name_value">{{ trans('cruds.productAttribute.fields.name_value') }}</label>
-                <input class="form-control {{ $errors->has('name_value') ? 'is-invalid' : '' }}" type="text" name="name_value" id="name_value" value="{{ old('name_value', $productAttribute->name_value) }}" required>
-                @if($errors->has('name_value'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('name_value') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.productAttribute.fields.name_value_helper') }}</span>
+            @php $productAttribute_name_value = json_decode($productAttribute->name_value,true); @endphp
+            <div class="form-group" id="dynamic_field">
+                <div id="dynamic_field">
+
+                    <label for="name">{{ trans('cruds.productAttribute.fields.attribute_value') }}</label>
+
+                    @foreach ($productAttribute_name_value as $name => $value)
+                        <div class="form-row mb-2" id="row{{ $loop->iteration }}">
+                            <input type="text" class="form-control col-5 mr-4" name="attribute_name[]"value="{{ $name }}"placeholder="{{ trans('cruds.productAttribute.fields.value_placeholder_name') }}">
+                            <input type="number" class="form-control col-5 mr-4" name="value[]" value="{{ $value }}"placeholder="{{ trans('cruds.productAttribute.fields.value_placeholder_value') }}">
+
+                            @if ($loop->index == 0)
+                                <button type="button" name="add" id="add" class="btn btn-primary">Add More</button>
+                            @else
+                                <button type="button" name="remove" id="{{ $loop->iteration }}"
+                                    class="btn btn-danger btn_remove">X</button>
+                            @endif
+                        </div>
+                    @endforeach
+                    @if ($errors->has('attribute_name'))
+                        <div class="invalid-feedback">
+                            {{ $errors->first('attribute_name') }}
+                        </div>
+                    @endif
+                    @if ($errors->has('value'))
+                        <div class="invalid-feedback">
+                            {{ $errors->first('value') }}
+                        </div>
+                    @endif
+                </div>
             </div>
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">
@@ -69,4 +90,23 @@
 
 
 
+@endsection
+<?php $count = count($productAttribute_name_value); ?>
+@section('scripts')
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var i = {{ $count }};
+            $("#add").click(function() {
+                i++;
+                $('#dynamic_field').append('<div class="form-row mb-2" id="row' + i +
+                    '"> <input type="text" class="form-control col-5 mr-4" name="attribute_name[]" placeholder="{{ trans('cruds.productAttribute.fields.value_placeholder_name') }}"> <input type="number" class="form-control col-5 mr-4" name="value[]" placeholder="{{ trans('cruds.productAttribute.fields.value_placeholder_value') }}"> <button type="button" name="remove" id="' +
+                    i + '" class="btn btn-danger btn_remove">X</button> </div>');
+            });
+            $(document).on('click', '.btn_remove', function() {
+                var button_id = $(this).attr("id");
+                $('#row' + button_id + '').remove();
+            });
+        });
+
+    </script>
 @endsection

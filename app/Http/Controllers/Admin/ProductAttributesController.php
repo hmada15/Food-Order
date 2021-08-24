@@ -40,9 +40,22 @@ class ProductAttributesController extends Controller
 
     public function store(StoreProductAttributeRequest $request)
     {
+        $request->merge([
+            'name_value' => json_encode(array_combine($request->attribute_name, $request->value)),
+        ]);
+
         $productAttribute = ProductAttribute::create($request->all());
 
         return redirect()->route('admin.product-attributes.index');
+    }
+
+    public function show(ProductAttribute $productAttribute)
+    {
+        abort_if(Gate::denies('product_attribute_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $productAttribute->load('product', 'parent_attribute');
+
+        return view('admin.productAttributes.show', compact('productAttribute'));
     }
 
     public function edit(ProductAttribute $productAttribute)
@@ -60,18 +73,13 @@ class ProductAttributesController extends Controller
 
     public function update(UpdateProductAttributeRequest $request, ProductAttribute $productAttribute)
     {
+        $request->merge([
+            'name_value' => json_encode(array_combine($request->attribute_name, $request->value)),
+        ]);
+
         $productAttribute->update($request->all());
 
         return redirect()->route('admin.product-attributes.index');
-    }
-
-    public function show(ProductAttribute $productAttribute)
-    {
-        abort_if(Gate::denies('product_attribute_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        $productAttribute->load('product', 'parent_attribute');
-
-        return view('admin.productAttributes.show', compact('productAttribute'));
     }
 
     public function destroy(ProductAttribute $productAttribute)

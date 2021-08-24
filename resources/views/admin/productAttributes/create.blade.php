@@ -47,18 +47,34 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.productAttribute.fields.parent_attribute_helper') }}</span>
             </div>
+
+
+
             <div class="form-group">
-                <label class="required" for="name_value">{{ trans('cruds.productAttribute.fields.name_value') }}</label>
-                <input class="form-control {{ $errors->has('name_value') ? 'is-invalid' : '' }}" type="text" name="name_value" id="name_value" value="{{ old('name_value', '') }}" required>
-                @if($errors->has('name_value'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('name_value') }}
+                <div id="dynamic_field">
+
+                    <label for="name">{{ trans('cruds.productAttribute.fields.name_value') }}</label>
+                    <div class="form-row mb-2">
+                        <input type="text" class="form-control col-5 mr-4" name="attribute_name[]" value="{{ old('Name', '') }}" placeholder="{{ trans('cruds.productAttribute.fields.value_placeholder_name') }}">
+                        <input type="number" class="form-control col-5 mr-4" name="value[]" value="{{ old('Value', '') }}" placeholder="{{ trans('cruds.productAttribute.fields.value_placeholder_value') }}">
+
+                        <button type="button" name="add" id="add" class="btn btn-primary">Add More</button>
                     </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.productAttribute.fields.name_value_helper') }}</span>
+                    @if($errors->has('name'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('name') }}
+                    </div>
+                    @endif
+                </div>
+                <span class="d-block">{{ trans('cruds.productAttribute.fields.name_v_helper') }}</span>
+                <span class="d-block">{{ trans('cruds.productAttribute.fields.n_value_helper') }}</span>
             </div>
-            <div class="form-group">
-                <button class="btn btn-danger" type="submit">
+
+
+
+
+            <div class="form-group mt-4">
+                <button class="btn btn-success" type="submit">
                     {{ trans('global.save') }}
                 </button>
             </div>
@@ -68,4 +84,23 @@
 
 
 
+@endsection
+@section('scripts')
+<script type="text/javascript">
+    $(document).ready(function(){
+
+      var i = 1;
+
+      $("#add").click(function(){
+        i++;
+        $('#dynamic_field').append('<div class="form-row mb-2" id="row'+i+'"> <input type="text" class="form-control col-5 mr-4" name="attribute_name[]" placeholder="{{ trans('cruds.productAttribute.fields.value_placeholder_name') }}"> <input type="number" class="form-control col-5 mr-4" name="value[]" placeholder="{{ trans('cruds.productAttribute.fields.value_placeholder_value') }}"> <button type="button" name="remove" id="'+i+'" class="btn btn-danger btn_remove">X</button> </div>');
+    });
+
+      $(document).on('click', '.btn_remove', function(){
+        var button_id = $(this).attr("id");
+        $('#row'+button_id+'').remove();
+      });
+
+    });
+  </script>
 @endsection

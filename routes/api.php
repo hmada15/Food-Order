@@ -6,9 +6,9 @@ Route::post('register', 'Api\v1\AuthController@register');
 //Nmaespace group remove because IDE extension don't regonise it
 Route::group(['prefix' => 'v1', 'as' => 'api.', 'middleware' => ['auth:sanctum']], function () {
     // Clients
-    Route::get('client', 'Api\V1\ClientsApiController@index')->name("client.index");
-    Route::PUT('client', 'Api\V1\ClientsApiController@update')->name("client.update");
-    Route::delete('client', 'Api\V1\ClientsApiController@destroy')->name("client.destroy");
+    Route::get('clients', 'Api\V1\ClientsApiController@index')->name("client.index");
+    Route::PUT('clients', 'Api\V1\ClientsApiController@update')->name("client.update");
+    Route::delete('clients', 'Api\V1\ClientsApiController@destroy')->name("client.destroy");
 
     // Client Addresses
     Route::apiResource('client-addresses', 'Api\V1\ClientAddressesApiController')->except("show");

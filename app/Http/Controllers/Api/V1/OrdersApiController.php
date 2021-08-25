@@ -20,7 +20,7 @@ class OrdersApiController extends Controller
     public function store(ApiStoreOrderRequest $request, CreateOrderAction $createOrderAction)
     {
 
-        $createOrderAction->execute($request);
+        $order = $createOrderAction->execute($request);
 
         return (new OrderResource($order))
             ->response()

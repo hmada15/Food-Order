@@ -15,6 +15,8 @@ class DatabaseSeeder extends Seeder
             ProductCategoriesSeeder::class,
             BrandsSeeder::class,
             ProductsSeeder::class,
+            DeliveryFeeSeeder::class,
+            TaxSeeder::class,
         ]);
     }
 }

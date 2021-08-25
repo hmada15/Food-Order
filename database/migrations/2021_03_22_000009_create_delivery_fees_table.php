@@ -11,7 +11,7 @@ class CreateDeliveryFeesTable extends Migration
         Schema::create('delivery_fees', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
-            $table->decimal('amount', 15, 2);
+            $table->integer('amount');
             $table->longText('note')->nullable();
             $table->timestamps();
             $table->softDeletes();

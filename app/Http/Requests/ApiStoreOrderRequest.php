@@ -47,7 +47,18 @@ class ApiStoreOrderRequest extends FormRequest
             'status'    => [
                 'required',
                 'in:option-pending,option-processing,option-completed,option-cancelled,option-refunded,'
-            ]
+            ],
+            "delivery_fee_id" => [
+                'nullable',
+                'integer',
+                'exists:delivery_fees,id'
+            ],
+            "tax_id" => [
+                'nullable',
+                'integer',
+                'exists:tax_values,id'
+            ],
+
         ];
     }
 }

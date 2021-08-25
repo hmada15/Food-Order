@@ -41,20 +41,24 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.order.fields.product') }}
+                            {{ trans('cruds.order.fields.product') }} => {{ trans('cruds.order.fields.number_of_product') }}
                         </th>
                         <td>
-                            {{ $order->product->name ?? '' }}
+                            @foreach ($order->products as $key => $product)
+                            {{ $product->name ?? '' }} => {{ $order->products[$key]->pivot->number_of_product }}<br>
+                        @endforeach
                         </td>
                     </tr>
-                    <tr>
+                    {{-- <tr>
                         <th>
                             {{ trans('cruds.order.fields.number_of_product') }}
                         </th>
                         <td>
-                            {{ $order->number_of_product }}
+                            @foreach ($order->products[$key]->$pivot->number_of_product as $product)
+                            {{$product->pivot->number_of_product ?? '' }}<br>
+                        @endforeach
                         </td>
-                    </tr>
+                    </tr> --}}
                     <tr>
                         <th>
                             {{ trans('cruds.order.fields.payment_method') }}

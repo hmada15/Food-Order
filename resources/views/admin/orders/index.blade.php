@@ -1,14 +1,5 @@
 @extends('layouts.admin')
 @section('content')
-@can('order_create')
-    <div style="margin-bottom: 10px;" class="row">
-        <div class="col-lg-12">
-            <a class="btn btn-success" href="{{ route('admin.orders.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.order.title_singular') }}
-            </a>
-        </div>
-    </div>
-@endcan
 <div class="card">
     <div class="card-header">
         {{ trans('cruds.order.title_singular') }} {{ trans('global.list') }}
@@ -30,9 +21,6 @@
                         </th>
                         <th>
                             {{ trans('cruds.order.fields.address') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.clientAddress.fields.street_name') }}
                         </th>
                         <th>
                             {{ trans('cruds.order.fields.product') }}
@@ -70,14 +58,6 @@
                                 <option value>{{ trans('global.all') }}</option>
                                 @foreach($clients as $key => $item)
                                     <option value="{{ $item->name }}">{{ $item->name }}</option>
-                                @endforeach
-                            </select>
-                        </td>
-                        <td>
-                            <select class="search">
-                                <option value>{{ trans('global.all') }}</option>
-                                @foreach($client_addresses as $key => $item)
-                                    <option value="{{ $item->street_name }}">{{ $item->street_name }}</option>
                                 @endforeach
                             </select>
                         </td>
@@ -149,9 +129,6 @@
                                 {{ $order->address->street_name ?? '' }}
                             </td>
                             <td>
-                                {{ $order->address->street_name ?? '' }}
-                            </td>
-                            <td>
                                 @foreach ($order->products as $product)
                                     {{ $product->name ?? '' }}<br>
                                 @endforeach
@@ -183,12 +160,6 @@
                                     </a>
                                 @endcan
 
-                                @can('order_edit')
-                                    <a class="btn btn-xs btn-info" href="{{ route('admin.orders.edit', $order->id) }}">
-                                        {{ trans('global.edit') }}
-                                    </a>
-                                @endcan
-
                                 @can('order_delete')
                                     <form action="{{ route('admin.orders.destroy', $order->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
                                         <input type="hidden" name="_method" value="DELETE">
@@ -206,8 +177,6 @@
         </div>
     </div>
 </div>
-
-
 
 @endsection
 @section('scripts')

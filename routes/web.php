@@ -1,9 +1,8 @@
 <?php
 
-
 Route::redirect('/', '/login');
 
-Route::get('test', function(){
+Route::get('test', function () {
     $user = \Auth::user();
     $user->tokens()->delete();
     return $user->createToken('auth-token')->plainTextToken;
@@ -69,10 +68,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     // Orders
     Route::delete('orders/destroy', 'OrdersController@massDestroy')->name('orders.massDestroy');
-    Route::post('orders/media', 'OrdersController@storeMedia')->name('orders.storeMedia');
-    Route::post('orders/ckmedia', 'OrdersController@storeCKEditorImages')->name('orders.storeCKEditorImages');
-    Route::resource('orders', 'OrdersController');
-
+    Route::resource('orders', 'OrdersController')->only("index", "show", "destroy");
     // Tax Values
     Route::delete('tax-values/destroy', 'TaxValuesController@massDestroy')->name('tax-values.massDestroy');
     Route::resource('tax-values', 'TaxValuesController');
@@ -81,6 +77,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('delivery-fees/destroy', 'DeliveryFeesController@massDestroy')->name('delivery-fees.massDestroy');
     Route::resource('delivery-fees', 'DeliveryFeesController');
 });
+
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
 // Change password
     if (file_exists(app_path('Http/Controllers/Auth/ChangePasswordController.php'))) {

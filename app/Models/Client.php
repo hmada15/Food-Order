@@ -2,12 +2,11 @@
 
 namespace App\Models;
 
-
 use Carbon\Carbon;
-use \DateTimeInterface;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use \DateTimeInterface;
 
 class Client extends Authenticatable
 {
@@ -27,7 +26,7 @@ class Client extends Authenticatable
     ];
 
     const GENDER_RADIO = [
-        'option-male'   => 'Male',
+        'option-male' => 'Male',
         'option-female' => 'Female',
     ];
 

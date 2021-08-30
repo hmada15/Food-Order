@@ -2,30 +2,28 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Client;
 use Gate;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Response;
 
 class UpdateClientRequest extends FormRequest
 {
     public function authorize()
     {
-        return Gate::allows('client_edit');
+        return true;
     }
 
     public function rules()
     {
         return [
-            'name'          => [
+            'name' => [
                 'string',
                 'required',
             ],
-            'email'         => [
+            'email' => [
                 'required',
-                'unique:clients,email,' . request()->route('client')->id,
+                'unique:clients,email,' . auth()->user()->id,
             ],
-            'phone_number'  => [
+            'phone_number' => [
                 'string',
                 'required',
             ],

@@ -28,7 +28,6 @@ class ClientsApiController extends Controller
 
     public function destroy()
     {
-        abort_if(Gate::denies('client_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $client = auth()->user();
 

@@ -38,13 +38,13 @@ class ProductTest extends TestCase
 
     public function test_everyone_can_access_products()
     {
-        $this->json('get', 'api/v1/products')
+        $this->getJson('api/v1/products')
             ->assertStatus(Response::HTTP_OK);
     }
 
     public function test_can_get_single_product()
     {
-        $this->json('get', "api/v1/products/{$this->product->id}")
+        $this->getJson("api/v1/products/{$this->product->id}")
             ->assertStatus(Response::HTTP_OK)
             ->assertJsonFragment([
                 "name" => "test product name",
@@ -53,7 +53,7 @@ class ProductTest extends TestCase
 
     public function test_canoot_access_unpublished_products()
     {
-        $this->json('get', 'api/v1/products')
+        $this->getJson('api/v1/products')
             ->assertStatus(Response::HTTP_OK)
             ->assertJsonMissing([
                 "is_publish" => "option-no",

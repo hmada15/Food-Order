@@ -32,13 +32,13 @@ class ProductCateogryTest extends TestCase
 
     public function test_everyone_can_access_product_categories()
     {
-        $this->json('get', 'api/v1/products')
+        $this->getJson('api/v1/products')
             ->assertStatus(Response::HTTP_OK);
     }
 
     public function test_can_get_single_product_category()
     {
-        $this->json('get', "api/v1/product-categories/{$this->product_cateogry->id}")
+        $this->getJson("api/v1/product-categories/{$this->product_cateogry->id}")
             ->assertStatus(Response::HTTP_OK)
             ->assertJsonFragment([
                 "name" => "category name test",
@@ -47,7 +47,7 @@ class ProductCateogryTest extends TestCase
 
     public function test_canoot_access_unpublished_products()
     {
-        $this->json('get', 'api/v1/product-categories')
+        $this->getJson('api/v1/product-categories')
             ->assertStatus(Response::HTTP_OK)
             ->assertJsonMissing([
                 "is_publish" => "option-no",
@@ -56,7 +56,7 @@ class ProductCateogryTest extends TestCase
 
     public function test_get_404_on_unknown_category()
     {
-        $this->json('get', 'api/v1/product-categories/55516621031547')
+        $this->getJson('api/v1/product-categories/55516621031547')
             ->assertStatus(Response::HTTP_NOT_FOUND);
     }
 

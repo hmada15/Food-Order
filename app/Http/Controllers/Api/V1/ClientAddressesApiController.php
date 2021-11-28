@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use Gate;
-use Illuminate\Http\Request;
-use App\Models\ClientAddress;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\ClientAddressResource;
-use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\ApiStoreClientAddressRequest;
 use App\Http\Requests\ApiUpdateClientAddressRequest;
+use App\Http\Resources\ClientAddressResource;
+use App\Models\ClientAddress;
+use Symfony\Component\HttpFoundation\Response;
 
 class ClientAddressesApiController extends Controller
 {
@@ -23,7 +21,9 @@ class ClientAddressesApiController extends Controller
 
     public function store(ApiStoreClientAddressRequest $request)
     {
-        if(!$request->client_id){$request['client_id'] = auth()->id();}
+        $request->merge([
+            'client_id' => auth()->user()->id,
+        ]);
 
         $clientAddress = ClientAddress::create($request->all());
 
@@ -34,10 +34,15 @@ class ClientAddressesApiController extends Controller
 
     public function update(ApiUpdateClientAddressRequest $request, $id)
     {
+        try {
+            $clientAddress = ClientAddress::Authorized()->findOrFail($id);
+        } catch (\Throwable $th) {
+            abort(404, "Unauthorized Or Not found");
+        }
 
-        $clientAddress = ClientAddress::Authorized()->where('id', $id)->firstOrFail();
-
-        if(!$request->client_id){$request['client_id'] = auth()->id();}
+        $request->merge([
+            'client_id' => auth()->user()->id,
+        ]);
 
         $clientAddress->update($request->all());
 

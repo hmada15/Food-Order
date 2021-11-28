@@ -14,10 +14,6 @@ class ApiStoreClientAddressRequest extends FormRequest
     public function rules()
     {
         return [
-            'client_id'        => [
-                'in:'.auth()->id(),
-                'integer',
-            ],
             'area'             => [
                 'string',
                 'nullable',

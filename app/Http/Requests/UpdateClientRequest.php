@@ -25,7 +25,7 @@ class UpdateClientRequest extends FormRequest
             ],
             'phone_number' => [
                 'string',
-                'required',
+                'nullable',
             ],
             'date_of_birth' => [
                 'date_format:' . config('panel.date_format'),

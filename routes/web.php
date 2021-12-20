@@ -2,12 +2,6 @@
 
 Route::redirect('/', '/login');
 
-Route::get('test', function () {
-    $user = \Auth::user();
-    $user->tokens()->delete();
-    return $user->createToken('auth-token')->plainTextToken;
-});
-
 Route::get('/home', function () {
     if (session('status')) {
         return redirect()->route('admin.home')->with('status', session('status'));
@@ -20,6 +14,7 @@ Auth::routes(['register' => false]);
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['auth']], function () {
     Route::get('/', 'HomeController@index')->name('home');
+
     // Permissions
     Route::delete('permissions/destroy', 'PermissionsController@massDestroy')->name('permissions.massDestroy');
     Route::resource('permissions', 'PermissionsController');
@@ -48,6 +43,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('products/ckmedia', 'ProductController@storeCKEditorImages')->name('products.storeCKEditorImages');
     Route::resource('products', 'ProductController');
 
+    // Product Attributes
+    Route::delete('product-attributes/destroy', 'ProductAttributesController@massDestroy')->name('product-attributes.massDestroy');
+    Route::resource('product-attributes', 'ProductAttributesController');
+
     // Clients
     Route::delete('clients/destroy', 'ClientsController@massDestroy')->name('clients.massDestroy');
     Route::resource('clients', 'ClientsController');
@@ -55,10 +54,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Client Addresses
     Route::delete('client-addresses/destroy', 'ClientAddressesController@massDestroy')->name('client-addresses.massDestroy');
     Route::resource('client-addresses', 'ClientAddressesController');
-
-    // Product Attributes
-    Route::delete('product-attributes/destroy', 'ProductAttributesController@massDestroy')->name('product-attributes.massDestroy');
-    Route::resource('product-attributes', 'ProductAttributesController');
 
     // Brands
     Route::delete('brands/destroy', 'BrandsController@massDestroy')->name('brands.massDestroy');
@@ -69,6 +64,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Orders
     Route::delete('orders/destroy', 'OrdersController@massDestroy')->name('orders.massDestroy');
     Route::resource('orders', 'OrdersController')->only("index", "show", "destroy");
+
     // Tax Values
     Route::delete('tax-values/destroy', 'TaxValuesController@massDestroy')->name('tax-values.massDestroy');
     Route::resource('tax-values', 'TaxValuesController');
